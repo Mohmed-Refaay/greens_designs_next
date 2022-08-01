@@ -1,13 +1,18 @@
 import "reflect-metadata";
-import type { NextApiRequest, NextApiResponse } from "next";
+import type {
+  NextApiRequest,
+  NextApiResponse,
+  PageConfig,
+} from "next";
 import { ApolloServer } from "apollo-server-micro";
 import { buildSchema } from "type-graphql";
 import { UserReslover } from "../../server/resolvers/user.resolver";
+import { CarReslover } from "../../server/resolvers/car.resolver";
 
 const apolloServer = new ApolloServer({
-  csrfPrevention: true,
+  // csrfPrevention: true,
   schema: await buildSchema({
-    resolvers: [UserReslover],
+    resolvers: [UserReslover, CarReslover],
   }),
 });
 
@@ -18,10 +23,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://studio.apollographql.com",
-  );
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Headers",
@@ -42,7 +44,7 @@ export default async function handler(
   );
 }
 
-export const config = {
+export const config: PageConfig = {
   api: {
     bodyParser: false,
   },
