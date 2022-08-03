@@ -1,15 +1,14 @@
-import axios, { Axios, AxiosResponse } from "axios";
+import axios from "axios";
 import { _GraphQLList } from "graphql/type/definition";
 
-export const uploadFile = (file: File): Promise<{ url: string }> => {
+export const uploadFile = (
+  file: File,
+): Promise<{ url: string[] }> => {
   const formData = new FormData();
 
   formData.append("file", file);
-  console.log(formData);
 
-  console.log("hello");
-
-  return new Promise<{ url: string }>((reso, rej) => {
+  return new Promise<{ url: string[] }>((reso, rej) => {
     axios
       .post("/api/upload", formData, {
         headers: {

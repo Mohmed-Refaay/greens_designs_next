@@ -30,11 +30,15 @@ apiRoute.use(upload.array("file"));
 
 apiRoute.post(
   (
-    req: NextApiRequest & { file: Express.Multer.File },
+    req: NextApiRequest & { files: Express.Multer.File[] },
     res: NextApiResponse,
   ) => {
-    console.log(req.file);
-    res.status(200).json({ url: req.file.filename });
+    res.status(200).json({
+      url:
+        req.files?.length > 0
+          ? req.files.map((file) => file.filename)
+          : null,
+    });
   },
 );
 

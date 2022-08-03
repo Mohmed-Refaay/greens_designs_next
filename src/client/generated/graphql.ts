@@ -14,48 +14,32 @@ export type Scalars = {
   Int: number;
   Float: number;
   DateTime: any;
-  Upload: any;
-};
-
-export type Car = {
-  __typename?: 'Car';
-  color: Scalars['String'];
-  coverImage: Scalars['String'];
-  createAt: Scalars['DateTime'];
-  id: Scalars['ID'];
-  model: Scalars['String'];
-  name: Scalars['String'];
-  topSpeed: Scalars['String'];
-};
-
-export type CarInput = {
-  color: Scalars['String'];
-  coverImage: Scalars['Upload'];
-  model: Scalars['String'];
-  name: Scalars['String'];
-  topSpeed: Scalars['String'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addCar?: Maybe<Scalars['String']>;
-  upload?: Maybe<Scalars['String']>;
+  addSection: Section;
 };
 
 
-export type MutationAddCarArgs = {
-  input: CarInput;
-};
-
-
-export type MutationUploadArgs = {
-  file: Scalars['Upload'];
+export type MutationAddSectionArgs = {
+  coverImage: Scalars['String'];
+  title: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  getCars: Array<Car>;
+  getSections: Array<Section>;
   getUsers: Array<User>;
+};
+
+export type Section = {
+  __typename?: 'Section';
+  absoluteUrl: Scalars['String'];
+  coverImage: Scalars['String'];
+  createAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  title: Scalars['String'];
 };
 
 export type User = {
@@ -65,121 +49,92 @@ export type User = {
   id: Scalars['ID'];
 };
 
-export type AddCarMutationVariables = Exact<{
-  input: CarInput;
+export type AddSectionMutationVariables = Exact<{
+  coverImage: Scalars['String'];
+  title: Scalars['String'];
 }>;
 
 
-export type AddCarMutation = { __typename?: 'Mutation', addCar?: string | null };
+export type AddSectionMutation = { __typename?: 'Mutation', addSection: { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string } };
 
-export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: string, full_name: string, email: string }> };
-
-export type UploadMutationVariables = Exact<{
-  file: Scalars['Upload'];
-}>;
+export type GetSectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UploadMutation = { __typename?: 'Mutation', upload?: string | null };
+export type GetSectionsQuery = { __typename?: 'Query', getSections: Array<{ __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string, absoluteUrl: string }> };
 
 
-export const AddCarDocument = gql`
-    mutation addCar($input: carInput!) {
-  addCar(input: $input)
+export const AddSectionDocument = gql`
+    mutation AddSection($coverImage: String!, $title: String!) {
+  addSection(coverImage: $coverImage, title: $title) {
+    id
+    createAt
+    title
+    coverImage
+  }
 }
     `;
-export type AddCarMutationFn = Apollo.MutationFunction<AddCarMutation, AddCarMutationVariables>;
+export type AddSectionMutationFn = Apollo.MutationFunction<AddSectionMutation, AddSectionMutationVariables>;
 
 /**
- * __useAddCarMutation__
+ * __useAddSectionMutation__
  *
- * To run a mutation, you first call `useAddCarMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddCarMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAddSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddSectionMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addCarMutation, { data, loading, error }] = useAddCarMutation({
+ * const [addSectionMutation, { data, loading, error }] = useAddSectionMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      coverImage: // value for 'coverImage'
+ *      title: // value for 'title'
  *   },
  * });
  */
-export function useAddCarMutation(baseOptions?: Apollo.MutationHookOptions<AddCarMutation, AddCarMutationVariables>) {
+export function useAddSectionMutation(baseOptions?: Apollo.MutationHookOptions<AddSectionMutation, AddSectionMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddCarMutation, AddCarMutationVariables>(AddCarDocument, options);
+        return Apollo.useMutation<AddSectionMutation, AddSectionMutationVariables>(AddSectionDocument, options);
       }
-export type AddCarMutationHookResult = ReturnType<typeof useAddCarMutation>;
-export type AddCarMutationResult = Apollo.MutationResult<AddCarMutation>;
-export type AddCarMutationOptions = Apollo.BaseMutationOptions<AddCarMutation, AddCarMutationVariables>;
-export const GetUsersDocument = gql`
-    query getUsers {
-  getUsers {
+export type AddSectionMutationHookResult = ReturnType<typeof useAddSectionMutation>;
+export type AddSectionMutationResult = Apollo.MutationResult<AddSectionMutation>;
+export type AddSectionMutationOptions = Apollo.BaseMutationOptions<AddSectionMutation, AddSectionMutationVariables>;
+export const GetSectionsDocument = gql`
+    query GetSections {
+  getSections {
     id
-    full_name
-    email
+    createAt
+    title
+    coverImage
+    absoluteUrl
   }
 }
     `;
 
 /**
- * __useGetUsersQuery__
+ * __useGetSectionsQuery__
  *
- * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetSectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetUsersQuery({
+ * const { data, loading, error } = useGetSectionsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+export function useGetSectionsQuery(baseOptions?: Apollo.QueryHookOptions<GetSectionsQuery, GetSectionsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+        return Apollo.useQuery<GetSectionsQuery, GetSectionsQueryVariables>(GetSectionsDocument, options);
       }
-export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+export function useGetSectionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSectionsQuery, GetSectionsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+          return Apollo.useLazyQuery<GetSectionsQuery, GetSectionsQueryVariables>(GetSectionsDocument, options);
         }
-export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
-export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
-export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
-export const UploadDocument = gql`
-    mutation upload($file: Upload!) {
-  upload(file: $file)
-}
-    `;
-export type UploadMutationFn = Apollo.MutationFunction<UploadMutation, UploadMutationVariables>;
-
-/**
- * __useUploadMutation__
- *
- * To run a mutation, you first call `useUploadMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadMutation, { data, loading, error }] = useUploadMutation({
- *   variables: {
- *      file: // value for 'file'
- *   },
- * });
- */
-export function useUploadMutation(baseOptions?: Apollo.MutationHookOptions<UploadMutation, UploadMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UploadMutation, UploadMutationVariables>(UploadDocument, options);
-      }
-export type UploadMutationHookResult = ReturnType<typeof useUploadMutation>;
-export type UploadMutationResult = Apollo.MutationResult<UploadMutation>;
-export type UploadMutationOptions = Apollo.BaseMutationOptions<UploadMutation, UploadMutationVariables>;
+export type GetSectionsQueryHookResult = ReturnType<typeof useGetSectionsQuery>;
+export type GetSectionsLazyQueryHookResult = ReturnType<typeof useGetSectionsLazyQuery>;
+export type GetSectionsQueryResult = Apollo.QueryResult<GetSectionsQuery, GetSectionsQueryVariables>;

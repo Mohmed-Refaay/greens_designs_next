@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
-export class Car {
+export class Section {
   @Field(() => ID)
   id!: number;
 
@@ -9,16 +9,7 @@ export class Car {
   createAt!: Date;
 
   @Field()
-  name!: string;
-
-  @Field()
-  model!: string;
-
-  @Field()
-  topSpeed!: string;
-
-  @Field()
-  color!: string;
+  title!: string;
 
   @Field()
   coverImage!: string;

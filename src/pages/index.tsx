@@ -1,42 +1,8 @@
 import Head from "next/head";
-import { ChangeEvent, FormEvent, useState } from "react";
-import {
-  GetUsersDocument,
-  GetUsersQuery,
-  useAddCarMutation,
-  useUploadMutation,
-} from "../client/generated/graphql";
-import styles from "../styles/Home.module.css";
-import { apolloClient } from "../utils/apolloClient";
-import { uploadFile } from "../utils/uploadApi";
 
-const Home: React.FC<{ data: GetUsersQuery }> = ({ data }) => {
-  const [add] = useAddCarMutation();
-  const [state, setState] = useState<{
-    name: string;
-    model: string;
-    color: string;
-    file: File | {};
-    topSpeed: string;
-  }>({
-    name: "Heel",
-    model: "tesla",
-    color: "black",
-    file: {},
-    topSpeed: "200",
-  });
-
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setState((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.files?.length
-        ? e.target.files![0]
-        : e.target.value,
-    }));
-  };
-
+const Home: React.FC = ({}) => {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Create Next App</title>
         <meta
@@ -45,85 +11,8 @@ const Home: React.FC<{ data: GetUsersQuery }> = ({ data }) => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className={styles.main}>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const data = await uploadFile(state.file as File);
-            add({
-              variables: {
-                input: {
-                  ...state,
-                  coverImage: data.url,
-                },
-              },
-            });
-          }}
-        >
-          <input
-            name="name"
-            placeholder="name"
-            value={state.name}
-            onChange={onChange}
-          />
-          <input
-            name="model"
-            placeholder="model"
-            value={state.model}
-            onChange={onChange}
-          />
-          <input
-            name="color"
-            placeholder="color"
-            value={state.color}
-            onChange={onChange}
-          />
-          <input
-            name="topSpeed"
-            placeholder="topSpeed"
-            value={state.topSpeed}
-            onChange={onChange}
-          />
-
-          <input
-            name="file"
-            placeholder="coverImage"
-            type={"file"}
-            accept="image/*"
-            required
-            onChange={onChange}
-          />
-          <button>submit</button>
-        </form>
-
-        <div className={styles.grid}>
-          {data?.getUsers.map((user) => (
-            <a
-              href="https://nextjs.org/docs"
-              className={styles.card}
-              key={user.id}
-            >
-              <h2>{user.full_name} &rarr;</h2>
-              <p>{user.email}</p>
-            </a>
-          ))}
-        </div>
-      </main>
     </div>
   );
 };
 
 export default Home;
-
-export const getServerSideProps = async () => {
-  const data = await apolloClient.query<GetUsersQuery>({
-    query: GetUsersDocument,
-  });
-
-  return {
-    props: {
-      data: data.data,
-    },
-  };
-};

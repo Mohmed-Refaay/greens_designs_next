@@ -7,12 +7,12 @@ import type {
 import { ApolloServer } from "apollo-server-micro";
 import { buildSchema } from "type-graphql";
 import { UserReslover } from "../../server/resolvers/user.resolver";
-import { CarReslover } from "../../server/resolvers/car.resolver";
+import { SectionReslover } from "../../server/resolvers/section.resolver";
 
 const apolloServer = new ApolloServer({
   // csrfPrevention: true,
   schema: await buildSchema({
-    resolvers: [UserReslover, CarReslover],
+    resolvers: [UserReslover, SectionReslover],
   }),
 });
 
