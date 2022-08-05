@@ -12,7 +12,7 @@ const PopupLayout: React.FC<PopupLayoutProps> = ({
 }) => {
   return (
     <div className="fixed top-0 left-0 bg-black/20 w-full h-screen z-10 flex justify-center items-center">
-      <div className="bg-white  w-full max-w-[400px] min-h-[500px] rounded-xl p-6 relative">
+      <div className="bg-white  w-full max-w-[400px] min-h-[250px] rounded-xl p-6 relative pt-10">
         <button
           className="absolute right-6 top-6 cursor-pointer"
           onClick={closeHanlder}

@@ -6,4 +6,15 @@
   .sidebarLink {
     @apply px-6 py-2 hover:bg-slate-200 transition-all;
   }
+  .inputContainer {
+    @apply flex flex-col mb-4 gap-1;
+  }
+
+  .textInput {
+    @apply border border-gray-400 rounded-md py-1 px-2 text-gray-500 focus:outline-gray-500;
+  }
+
+  .btn {
+    @apply transition-all font-semibold border-green-500 text-green-500 border-2 rounded-lg px-5 py-1 cursor-pointer disabled:opacity-25 disabled:cursor-not-allowed hover:text-white hover:bg-green-500;
+  }
 }
