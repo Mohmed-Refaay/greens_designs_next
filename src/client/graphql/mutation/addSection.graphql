@@ -4,5 +4,6 @@ mutation AddSection($coverImage: String!, $title: String!) {
     createAt
     title
     coverImage
+    absoluteUrl
   }
 }

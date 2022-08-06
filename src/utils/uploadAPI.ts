@@ -14,12 +14,6 @@ export const uploadFile = (
         headers: {
           "content-type": "multipart/form-data",
         },
-        onUploadProgress: (event) => {
-          console.log(
-            `Current progress:`,
-            Math.round((event.loaded * 100) / event.total),
-          );
-        },
       })
       .then((res) => {
         reso(res.data);

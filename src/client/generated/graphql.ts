@@ -55,7 +55,7 @@ export type AddSectionMutationVariables = Exact<{
 }>;
 
 
-export type AddSectionMutation = { __typename?: 'Mutation', addSection: { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string } };
+export type AddSectionMutation = { __typename?: 'Mutation', addSection: { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string, absoluteUrl: string } };
 
 export type GetSectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -70,6 +70,7 @@ export const AddSectionDocument = gql`
     createAt
     title
     coverImage
+    absoluteUrl
   }
 }
     `;

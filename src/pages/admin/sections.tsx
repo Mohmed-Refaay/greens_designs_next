@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import {
+  GetSectionsDocument,
   useAddSectionMutation,
   useGetSectionsQuery,
 } from "../../client/generated/graphql";
@@ -8,10 +9,12 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import PopupLayout from "../../components/PopupLayout";
 import { uploadFile } from "../../utils/uploadAPI";
 import { Formik } from "formik";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import Image from "next/image";
 
 const Sections: React.FC = () => {
   const [isOpened, setIsOpened] = useState(false);
-  const { data } = useGetSectionsQuery();
+  const { data, loading } = useGetSectionsQuery();
 
   return (
     <AdminLayout title="Sections">
@@ -24,11 +27,27 @@ const Sections: React.FC = () => {
         </button>
       </div>
       <div>
-        {data?.getSections.map((section) => (
-          <div key={section.id}>
-            <h3>{section.title}</h3>
+        {loading ? (
+          <LoadingSpinner size="rg" />
+        ) : (
+          <div className="grid gap-6 mt-7 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {data?.getSections.map((section) => (
+              <div
+                key={section.id}
+                className="shadow-lg rounded-md overflow-hidden pb-3"
+              >
+                <div className="relative w-full h-[200px]">
+                  <Image
+                    src={`/uploads/${section.coverImage}`}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
+                <h3 className="mt-3 text-center">{section.title}</h3>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </AdminLayout>
   );
@@ -44,7 +63,9 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
   closeHanlder,
 }) => {
   const [parent] = useAutoAnimate();
-  const [mutate] = useAddSectionMutation();
+  const [mutate] = useAddSectionMutation({
+    refetchQueries: [{ query: GetSectionsDocument }, "GetSections"],
+  });
   const [image, setImage] = useState<File | null>(null);
 
   const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +82,6 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
           if (!values.title) {
             errors.title = "This Field is required!";
           }
-          console.log("Validating");
           if (!image) {
             errors.image = "This Field is required!";
           }
@@ -101,7 +121,7 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
 
           setTimeout(() => {
             closeHanlder();
-          }, 3000);
+          }, 2300);
         }}
       >
         {({
