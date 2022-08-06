@@ -170,7 +170,6 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
               data ? "updated" : "added"
             } successfully!`,
           });
-          setSubmitting(false);
 
           setTimeout(() => {
             closeHanlder();
@@ -235,7 +234,11 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
             <button
               className="mt-8 btn"
               type="submit"
-              disabled={isSubmitting || isValidating}
+              disabled={
+                isSubmitting ||
+                isValidating ||
+                status?.type === "success"
+              }
             >
               {isSubmitting ? "Loading..." : "Save"}
             </button>
