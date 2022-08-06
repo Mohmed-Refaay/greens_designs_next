@@ -1,26 +1,29 @@
 import axios from "axios";
-import { _GraphQLList } from "graphql/type/definition";
 
-export const uploadFile = (
-  file: File,
-): Promise<{ url: string[] }> => {
+export const uploadFile = async (
+  files: File[],
+): Promise<string[] | false> => {
+  const urls = [];
   const formData = new FormData();
 
-  formData.append("file", file);
+  for (let file of files) {
+    formData.append("file", file);
+    formData.append("api_key", "982782983714229");
+    formData.append("upload_preset", "axkz0kse");
 
-  return new Promise<{ url: string[] }>((reso, rej) => {
-    axios
-      .post("/api/upload", formData, {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        reso(res.data);
-      })
-      .catch((err) => {
-        console.log(err.response);
-        rej("image upload error!");
-      });
-  });
+    try {
+      const data = await axios.post(
+        "https://api.cloudinary.com/v1_1/refaay/image/upload",
+        formData,
+      );
+
+      urls.push(data.data.secure_url);
+    } catch (error) {
+      if (error) {
+        return false;
+      }
+    }
+  }
+
+  return urls;
 };

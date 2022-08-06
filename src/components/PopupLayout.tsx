@@ -22,6 +22,7 @@ const PopupLayout: React.FC<PopupLayoutProps> = ({
             width={20}
             height={20}
             layout="fixed"
+            alt="close"
           />
         </button>
         {children}

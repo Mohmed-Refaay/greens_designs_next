@@ -14,6 +14,7 @@ const apolloServer = new ApolloServer({
   schema: await buildSchema({
     resolvers: [UserReslover, SectionReslover],
   }),
+  cache: "bounded",
 });
 
 const startServer = apolloServer.start();

@@ -119,15 +119,10 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
         ) => {
           let imageData: any;
           if (image) {
-            imageData = await uploadFile(image as File);
+            imageData = await uploadFile([image as File]);
           }
 
-          if (
-            image &&
-            (!imageData ||
-              !imageData.url ||
-              imageData.url.length <= 0)
-          ) {
+          if (image && (!imageData || imageData.length <= 0)) {
             setErrors({ image: "Image upload faild!" });
             return;
           }
@@ -138,9 +133,7 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
               await updateSection({
                 variables: {
                   updateSectionId: data.id,
-                  coverImage: image
-                    ? imageData.url[0]
-                    : data.coverImage,
+                  coverImage: image ? imageData[0] : data.coverImage,
                   title: values.title,
                 },
               });
@@ -150,7 +143,7 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
             const { errors: addSectionErrors } = await addSection({
               variables: {
                 title: values.title,
-                coverImage: imageData.url[0],
+                coverImage: imageData[0],
               },
             });
             errors = addSectionErrors;

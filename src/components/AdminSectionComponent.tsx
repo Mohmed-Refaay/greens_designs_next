@@ -44,9 +44,11 @@ const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
     <div className="shadow-lg rounded-md overflow-hidden pb-4">
       <div className="relative w-full h-[200px]">
         <Image
-          src={`/uploads/${sectionData.coverImage}`}
+          src={sectionData.coverImage}
           layout="fill"
           objectFit="cover"
+          alt={sectionData.title}
+          priority
         />
       </div>
       <div className="mt-4 flex items-center justify-between px-6">
@@ -62,6 +64,7 @@ const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
               layout="fixed"
               width={25}
               height={25}
+              alt="Edit"
             />
           </button>
           <button
@@ -74,6 +77,7 @@ const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
               layout="fixed"
               width={25}
               height={25}
+              alt="Delete"
             />
           </button>
         </div>
