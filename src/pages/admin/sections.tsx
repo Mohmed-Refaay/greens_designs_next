@@ -10,14 +10,14 @@ import PopupLayout from "../../components/PopupLayout";
 import { uploadFile } from "../../utils/uploadAPI";
 import { Formik } from "formik";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import Image from "next/image";
+import AdminSectionComponent from "../../components/AdminSectionComponent";
 
 const Sections: React.FC = () => {
   const [isOpened, setIsOpened] = useState(false);
   const { data, loading } = useGetSectionsQuery();
 
   return (
-    <AdminLayout title="Sections">
+    <AdminLayout>
       {isOpened && (
         <SectionPopup closeHanlder={() => setIsOpened(false)} />
       )}
@@ -32,19 +32,12 @@ const Sections: React.FC = () => {
         ) : (
           <div className="grid gap-6 mt-7 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {data?.getSections.map((section) => (
-              <div
+              <AdminSectionComponent
                 key={section.id}
-                className="shadow-lg rounded-md overflow-hidden pb-3"
-              >
-                <div className="relative w-full h-[200px]">
-                  <Image
-                    src={`/uploads/${section.coverImage}`}
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                </div>
-                <h3 className="mt-3 text-center">{section.title}</h3>
-              </div>
+                id={section.id}
+                title={section.title}
+                coverImage={section.coverImage}
+              />
             ))}
           </div>
         )}

@@ -4,13 +4,9 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  title: string;
 }
 
-const AdminLayout: React.FC<AdminLayoutProps> = ({
-  children,
-  title,
-}) => {
+const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const [parent] = useAutoAnimate();
 
   return (
@@ -31,8 +27,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
             <Link href="/admin/projects">Projects</Link>
           </div>
         </div>
+        {/* Content */}
         <div className="px-8 pt-8 w-full">
-          <h2 className="text-lg font-semibold">{title}</h2>
           <div className="mt-[40px] w-full" ref={parent as any}>
             {children}
           </div>

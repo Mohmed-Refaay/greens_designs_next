@@ -7,6 +7,7 @@ import {
   Resolver,
   FieldResolver,
   Root,
+  Int,
 } from "type-graphql";
 import { prisma } from "../../utils/prisma";
 import { Section } from "../schemas/section.schema";
@@ -36,5 +37,22 @@ export class SectionReslover {
     });
 
     return section;
+  }
+
+  @Mutation(() => Boolean)
+  async deleteSection(
+    @Arg("id", () => Int) id: number,
+  ): Promise<boolean> {
+    try {
+      await prisma.section.delete({
+        where: {
+          id: id,
+        },
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
