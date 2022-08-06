@@ -5,16 +5,20 @@ import {
   useDeleteSectionMutation,
 } from "../client/generated/graphql";
 
-interface AdminSectionComponentProps {
+export type SectionData = {
   id: string;
   title: string;
   coverImage: string;
+};
+
+interface AdminSectionComponentProps {
+  sectionData: SectionData;
+  updateHandler: () => void;
 }
 
 const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
-  id,
-  title,
-  coverImage,
+  sectionData,
+  updateHandler,
 }) => {
   const [deleteSection] = useDeleteSectionMutation({
     refetchQueries: [{ query: GetSectionsDocument }, "GetSections"],
@@ -22,13 +26,13 @@ const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
 
   const deleteSectionHandler = async () => {
     const isSure = window.confirm(
-      `You want to delete ${title} section?`,
+      `You want to delete ${sectionData.title} section?`,
     );
 
     if (!isSure) return;
 
     const data = await deleteSection({
-      variables: { deleteSectionId: +id },
+      variables: { deleteSectionId: +sectionData.id },
     });
 
     if (!data.data?.deleteSection.valueOf) {
@@ -40,14 +44,26 @@ const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
     <div className="shadow-lg rounded-md overflow-hidden pb-4">
       <div className="relative w-full h-[200px]">
         <Image
-          src={`/uploads/${coverImage}`}
+          src={`/uploads/${sectionData.coverImage}`}
           layout="fill"
           objectFit="cover"
         />
       </div>
       <div className="mt-4 flex items-center justify-between px-6">
-        <h3 className="text-center">{title}</h3>
-        <div>
+        <h3 className="text-center">{sectionData.title}</h3>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={updateHandler}
+          >
+            <Image
+              src="/icons/edit.png"
+              layout="fixed"
+              width={25}
+              height={25}
+            />
+          </button>
           <button
             type="button"
             className="cursor-pointer"

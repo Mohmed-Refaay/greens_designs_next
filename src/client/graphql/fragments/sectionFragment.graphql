@@ -1,0 +1,6 @@
+fragment SectionFragment on Section {
+  id
+  createAt
+  title
+  coverImage
+}

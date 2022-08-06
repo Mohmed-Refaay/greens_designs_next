@@ -1,0 +1,13 @@
+mutation UpdateSection(
+  $coverImage: String!
+  $updateSectionId: String!
+  $title: String!
+) {
+  updateSection(
+    coverImage: $coverImage
+    id: $updateSectionId
+    title: $title
+  ) {
+    ...SectionFragment
+  }
+}

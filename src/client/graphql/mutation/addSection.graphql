@@ -1,9 +1,5 @@
 mutation AddSection($coverImage: String!, $title: String!) {
   addSection(coverImage: $coverImage, title: $title) {
-    id
-    createAt
-    title
-    coverImage
-    absoluteUrl
+    ...SectionFragment
   }
 }

@@ -1,9 +1,5 @@
 query GetSections {
   getSections {
-    id
-    createAt
-    title
-    coverImage
-    absoluteUrl
+    ...SectionFragment
   }
 }

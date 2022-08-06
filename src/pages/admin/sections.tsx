@@ -4,45 +4,72 @@ import {
   GetSectionsDocument,
   useAddSectionMutation,
   useGetSectionsQuery,
+  useUpdateSectionMutation,
 } from "../../client/generated/graphql";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import PopupLayout from "../../components/PopupLayout";
 import { uploadFile } from "../../utils/uploadAPI";
 import { Formik } from "formik";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import AdminSectionComponent from "../../components/AdminSectionComponent";
+import AdminSectionComponent, {
+  SectionData,
+} from "../../components/AdminSectionComponent";
+import Head from "next/head";
 
 const Sections: React.FC = () => {
   const [isOpened, setIsOpened] = useState(false);
   const { data, loading } = useGetSectionsQuery();
+  const [selectedSection, setSelectedSection] =
+    useState<SectionData | null>(null);
+
+  const handleOpenPopup = (data?: SectionData) => {
+    if (data) {
+      setSelectedSection(data);
+    }
+    setIsOpened(true);
+  };
+
+  const handleClosePopup = () => {
+    if (selectedSection) setSelectedSection(null);
+    setIsOpened(false);
+  };
 
   return (
-    <AdminLayout>
-      {isOpened && (
-        <SectionPopup closeHanlder={() => setIsOpened(false)} />
-      )}
-      <div className="flex justify-end">
-        <button className="btn" onClick={() => setIsOpened(true)}>
-          Add Section
-        </button>
-      </div>
-      <div>
-        {loading ? (
-          <LoadingSpinner size="rg" />
-        ) : (
-          <div className="grid gap-6 mt-7 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {data?.getSections.map((section) => (
-              <AdminSectionComponent
-                key={section.id}
-                id={section.id}
-                title={section.title}
-                coverImage={section.coverImage}
-              />
-            ))}
-          </div>
+    <>
+      <Head>
+        <title>Sections | Admin Panel</title>
+      </Head>
+      <AdminLayout>
+        {isOpened && (
+          <SectionPopup
+            data={selectedSection}
+            closeHanlder={handleClosePopup}
+          />
         )}
-      </div>
-    </AdminLayout>
+        <div className="flex justify-end">
+          <button className="btn" onClick={() => handleOpenPopup()}>
+            Add Section
+          </button>
+        </div>
+        <div>
+          {loading ? (
+            <LoadingSpinner size="rg" />
+          ) : (
+            <div className="grid gap-6 mt-7 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {data?.getSections.map((section) => (
+                <AdminSectionComponent
+                  key={section.id}
+                  sectionData={section}
+                  updateHandler={() => {
+                    handleOpenPopup(section);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </AdminLayout>
+    </>
   );
 };
 
@@ -50,15 +77,21 @@ export default Sections;
 
 interface SectionPopupProps {
   closeHanlder: () => void;
+  data?: SectionData | null;
 }
 
 const SectionPopup: React.FC<SectionPopupProps> = ({
   closeHanlder,
+  data,
 }) => {
   const [parent] = useAutoAnimate();
-  const [mutate] = useAddSectionMutation({
+  const [addSection] = useAddSectionMutation({
     refetchQueries: [{ query: GetSectionsDocument }, "GetSections"],
   });
+  const [updateSection] = useUpdateSectionMutation({
+    refetchQueries: [{ query: GetSectionsDocument }, "GetSections"],
+  });
+
   const [image, setImage] = useState<File | null>(null);
 
   const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -68,14 +101,14 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
   return (
     <PopupLayout closeHanlder={closeHanlder}>
       <Formik
-        initialValues={{ title: "", image: "" }}
+        initialValues={{ title: data?.title || "", image: "" }}
         validateOnChange={true}
         validate={(values) => {
           const errors: { [key: string]: string } = {};
           if (!values.title) {
             errors.title = "This Field is required!";
           }
-          if (!image) {
+          if (!image && !data?.coverImage) {
             errors.image = "This Field is required!";
           }
           return errors;
@@ -84,19 +117,44 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
           values,
           { setErrors, setStatus, setSubmitting },
         ) => {
-          const data = await uploadFile(image as File);
+          let imageData: any;
+          if (image) {
+            imageData = await uploadFile(image as File);
+          }
 
-          if (!data || !data.url || data.url.length <= 0) {
+          if (
+            image &&
+            (!imageData ||
+              !imageData.url ||
+              imageData.url.length <= 0)
+          ) {
             setErrors({ image: "Image upload faild!" });
             return;
           }
 
-          const { errors } = await mutate({
-            variables: {
-              title: values.title,
-              coverImage: data.url[0],
-            },
-          });
+          let errors;
+          if (data) {
+            const { errors: updateSectionErrors } =
+              await updateSection({
+                variables: {
+                  updateSectionId: data.id,
+                  coverImage: image
+                    ? imageData.url[0]
+                    : data.coverImage,
+                  title: values.title,
+                },
+              });
+
+            errors = updateSectionErrors;
+          } else {
+            const { errors: addSectionErrors } = await addSection({
+              variables: {
+                title: values.title,
+                coverImage: imageData.url[0],
+              },
+            });
+            errors = addSectionErrors;
+          }
 
           if (errors) {
             setStatus({
@@ -108,7 +166,9 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
 
           setStatus({
             type: "success",
-            message: "Section is added successfully!",
+            message: `Section is ${
+              data ? "updated" : "added"
+            } successfully!`,
           });
           setSubmitting(false);
 
@@ -145,7 +205,7 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
             </div>
             <div ref={parent as any} className="inputContainer">
               <label className="text-gray-500 mb-1">
-                Cover Image:
+                {data && "Update"} Cover Image:
               </label>
               <input
                 type="file"

@@ -20,6 +20,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addSection: Section;
   deleteSection: Scalars['Boolean'];
+  updateSection: Section;
 };
 
 
@@ -33,6 +34,13 @@ export type MutationDeleteSectionArgs = {
   id: Scalars['Int'];
 };
 
+
+export type MutationUpdateSectionArgs = {
+  coverImage: Scalars['String'];
+  id: Scalars['String'];
+  title: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getSections: Array<Section>;
@@ -41,7 +49,6 @@ export type Query = {
 
 export type Section = {
   __typename?: 'Section';
-  absoluteUrl: Scalars['String'];
   coverImage: Scalars['String'];
   createAt: Scalars['DateTime'];
   id: Scalars['ID'];
@@ -55,13 +62,15 @@ export type User = {
   id: Scalars['ID'];
 };
 
+export type SectionFragmentFragment = { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string };
+
 export type AddSectionMutationVariables = Exact<{
   coverImage: Scalars['String'];
   title: Scalars['String'];
 }>;
 
 
-export type AddSectionMutation = { __typename?: 'Mutation', addSection: { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string, absoluteUrl: string } };
+export type AddSectionMutation = { __typename?: 'Mutation', addSection: { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string } };
 
 export type DeleteSectionMutationVariables = Exact<{
   deleteSectionId: Scalars['Int'];
@@ -70,23 +79,35 @@ export type DeleteSectionMutationVariables = Exact<{
 
 export type DeleteSectionMutation = { __typename?: 'Mutation', deleteSection: boolean };
 
+export type UpdateSectionMutationVariables = Exact<{
+  coverImage: Scalars['String'];
+  updateSectionId: Scalars['String'];
+  title: Scalars['String'];
+}>;
+
+
+export type UpdateSectionMutation = { __typename?: 'Mutation', updateSection: { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string } };
+
 export type GetSectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSectionsQuery = { __typename?: 'Query', getSections: Array<{ __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string, absoluteUrl: string }> };
+export type GetSectionsQuery = { __typename?: 'Query', getSections: Array<{ __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string }> };
 
-
+export const SectionFragmentFragmentDoc = gql`
+    fragment SectionFragment on Section {
+  id
+  createAt
+  title
+  coverImage
+}
+    `;
 export const AddSectionDocument = gql`
     mutation AddSection($coverImage: String!, $title: String!) {
   addSection(coverImage: $coverImage, title: $title) {
-    id
-    createAt
-    title
-    coverImage
-    absoluteUrl
+    ...SectionFragment
   }
 }
-    `;
+    ${SectionFragmentFragmentDoc}`;
 export type AddSectionMutationFn = Apollo.MutationFunction<AddSectionMutation, AddSectionMutationVariables>;
 
 /**
@@ -145,17 +166,48 @@ export function useDeleteSectionMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteSectionMutationHookResult = ReturnType<typeof useDeleteSectionMutation>;
 export type DeleteSectionMutationResult = Apollo.MutationResult<DeleteSectionMutation>;
 export type DeleteSectionMutationOptions = Apollo.BaseMutationOptions<DeleteSectionMutation, DeleteSectionMutationVariables>;
+export const UpdateSectionDocument = gql`
+    mutation UpdateSection($coverImage: String!, $updateSectionId: String!, $title: String!) {
+  updateSection(coverImage: $coverImage, id: $updateSectionId, title: $title) {
+    ...SectionFragment
+  }
+}
+    ${SectionFragmentFragmentDoc}`;
+export type UpdateSectionMutationFn = Apollo.MutationFunction<UpdateSectionMutation, UpdateSectionMutationVariables>;
+
+/**
+ * __useUpdateSectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSectionMutation, { data, loading, error }] = useUpdateSectionMutation({
+ *   variables: {
+ *      coverImage: // value for 'coverImage'
+ *      updateSectionId: // value for 'updateSectionId'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useUpdateSectionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSectionMutation, UpdateSectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSectionMutation, UpdateSectionMutationVariables>(UpdateSectionDocument, options);
+      }
+export type UpdateSectionMutationHookResult = ReturnType<typeof useUpdateSectionMutation>;
+export type UpdateSectionMutationResult = Apollo.MutationResult<UpdateSectionMutation>;
+export type UpdateSectionMutationOptions = Apollo.BaseMutationOptions<UpdateSectionMutation, UpdateSectionMutationVariables>;
 export const GetSectionsDocument = gql`
     query GetSections {
   getSections {
-    id
-    createAt
-    title
-    coverImage
-    absoluteUrl
+    ...SectionFragment
   }
 }
-    `;
+    ${SectionFragmentFragmentDoc}`;
 
 /**
  * __useGetSectionsQuery__

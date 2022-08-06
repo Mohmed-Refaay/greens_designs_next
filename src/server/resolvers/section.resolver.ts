@@ -1,7 +1,5 @@
 import {
   Arg,
-  Field,
-  InputType,
   Mutation,
   Query,
   Resolver,
@@ -14,11 +12,6 @@ import { Section } from "../schemas/section.schema";
 
 @Resolver(Section)
 export class SectionReslover {
-  @FieldResolver(() => String)
-  absoluteUrl(@Root() section: Section): string {
-    return `http://localhost:3000/uploads/${section.coverImage}`;
-  }
-
   @Query(() => [Section])
   async getSections(): Promise<Section[]> {
     return await prisma.section.findMany();
@@ -54,5 +47,24 @@ export class SectionReslover {
     } catch (error) {
       return false;
     }
+  }
+
+  @Mutation(() => Section)
+  async updateSection(
+    @Arg("id") id: string,
+    @Arg("title") title: string,
+    @Arg("coverImage") coverImage: string,
+  ): Promise<Section> {
+    const section = await prisma.section.update({
+      where: {
+        id: +id,
+      },
+      data: {
+        title,
+        coverImage,
+      },
+    });
+
+    return section;
   }
 }
