@@ -16,11 +16,36 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Image = {
+  __typename?: 'Image';
+  createAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  projectId: Scalars['Float'];
+  url: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addProject: Project;
+  addProjectImage: Scalars['Boolean'];
   addSection: Section;
+  deleteProjectImage: Scalars['Boolean'];
   deleteSection: Scalars['Boolean'];
+  updateProject: Project;
   updateSection: Section;
+};
+
+
+export type MutationAddProjectArgs = {
+  content: Scalars['String'];
+  sectionId: Scalars['Float'];
+  title: Scalars['String'];
+};
+
+
+export type MutationAddProjectImageArgs = {
+  projectId: Scalars['Float'];
+  url: Scalars['String'];
 };
 
 
@@ -30,8 +55,21 @@ export type MutationAddSectionArgs = {
 };
 
 
+export type MutationDeleteProjectImageArgs = {
+  id: Scalars['Float'];
+};
+
+
 export type MutationDeleteSectionArgs = {
   id: Scalars['Int'];
+};
+
+
+export type MutationUpdateProjectArgs = {
+  content: Scalars['String'];
+  id: Scalars['Float'];
+  sectionId: Scalars['Float'];
+  title: Scalars['String'];
 };
 
 
@@ -41,8 +79,18 @@ export type MutationUpdateSectionArgs = {
   title: Scalars['String'];
 };
 
+export type Project = {
+  __typename?: 'Project';
+  content: Scalars['String'];
+  createAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  images: Array<Image>;
+  title: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  getProjects: Array<Project>;
   getSections: Array<Section>;
   getUsers: Array<User>;
 };
@@ -63,6 +111,15 @@ export type User = {
 };
 
 export type SectionFragmentFragment = { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string };
+
+export type AddProjectMutationVariables = Exact<{
+  sectionId: Scalars['Float'];
+  title: Scalars['String'];
+  content: Scalars['String'];
+}>;
+
+
+export type AddProjectMutation = { __typename?: 'Mutation', addProject: { __typename?: 'Project', id: string, createAt: any, title: string, content: string, images: Array<{ __typename?: 'Image', url: string, id: string }> } };
 
 export type AddSectionMutationVariables = Exact<{
   coverImage: Scalars['String'];
@@ -88,6 +145,11 @@ export type UpdateSectionMutationVariables = Exact<{
 
 export type UpdateSectionMutation = { __typename?: 'Mutation', updateSection: { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string } };
 
+export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProjectsQuery = { __typename?: 'Query', getProjects: Array<{ __typename?: 'Project', id: string, createAt: any, title: string, content: string, images: Array<{ __typename?: 'Image', id: string, url: string }> }> };
+
 export type GetSectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -101,6 +163,48 @@ export const SectionFragmentFragmentDoc = gql`
   coverImage
 }
     `;
+export const AddProjectDocument = gql`
+    mutation AddProject($sectionId: Float!, $title: String!, $content: String!) {
+  addProject(sectionId: $sectionId, title: $title, content: $content) {
+    id
+    createAt
+    title
+    content
+    images {
+      url
+      id
+    }
+  }
+}
+    `;
+export type AddProjectMutationFn = Apollo.MutationFunction<AddProjectMutation, AddProjectMutationVariables>;
+
+/**
+ * __useAddProjectMutation__
+ *
+ * To run a mutation, you first call `useAddProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProjectMutation, { data, loading, error }] = useAddProjectMutation({
+ *   variables: {
+ *      sectionId: // value for 'sectionId'
+ *      title: // value for 'title'
+ *      content: // value for 'content'
+ *   },
+ * });
+ */
+export function useAddProjectMutation(baseOptions?: Apollo.MutationHookOptions<AddProjectMutation, AddProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProjectMutation, AddProjectMutationVariables>(AddProjectDocument, options);
+      }
+export type AddProjectMutationHookResult = ReturnType<typeof useAddProjectMutation>;
+export type AddProjectMutationResult = Apollo.MutationResult<AddProjectMutation>;
+export type AddProjectMutationOptions = Apollo.BaseMutationOptions<AddProjectMutation, AddProjectMutationVariables>;
 export const AddSectionDocument = gql`
     mutation AddSection($coverImage: String!, $title: String!) {
   addSection(coverImage: $coverImage, title: $title) {
@@ -201,6 +305,47 @@ export function useUpdateSectionMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateSectionMutationHookResult = ReturnType<typeof useUpdateSectionMutation>;
 export type UpdateSectionMutationResult = Apollo.MutationResult<UpdateSectionMutation>;
 export type UpdateSectionMutationOptions = Apollo.BaseMutationOptions<UpdateSectionMutation, UpdateSectionMutationVariables>;
+export const GetProjectsDocument = gql`
+    query GetProjects {
+  getProjects {
+    id
+    createAt
+    title
+    content
+    images {
+      id
+      url
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectsQuery__
+ *
+ * To run a query within a React component, call `useGetProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProjectsQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
+      }
+export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsQuery, GetProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, options);
+        }
+export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
+export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
+export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
 export const GetSectionsDocument = gql`
     query GetSections {
   getSections {

@@ -1,0 +1,12 @@
+query GetProjects {
+  getProjects {
+    id
+    createAt
+    title
+    content
+    images {
+      id
+      url
+    }
+  }
+}

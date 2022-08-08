@@ -113,10 +113,7 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
           }
           return errors;
         }}
-        onSubmit={async (
-          values,
-          { setErrors, setStatus, setSubmitting },
-        ) => {
+        onSubmit={async (values, { setErrors, setStatus }) => {
           let imageData: any;
           if (image) {
             imageData = await uploadFile([image as File]);

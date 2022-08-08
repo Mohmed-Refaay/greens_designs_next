@@ -1,0 +1,20 @@
+mutation AddProject(
+  $sectionId: Float!
+  $title: String!
+  $content: String!
+) {
+  addProject(
+    sectionId: $sectionId
+    title: $title
+    content: $content
+  ) {
+    id
+    createAt
+    title
+    content
+    images {
+      url
+      id
+    }
+  }
+}
