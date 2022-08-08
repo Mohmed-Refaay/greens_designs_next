@@ -2,13 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "mysql"
-  url = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
@@ -16,6 +16,26 @@ model Section {
   id       Int      @id @default(autoincrement())
   createAt DateTime @default(now())
 
-  title      String 
-  coverImage String 
+  title      String
+  coverImage String
+  projects Project[]
+}
+
+model Project {
+  id       Int      @id @default(autoincrement())
+  createAt DateTime @default(now())
+
+  title  String
+  content String
+  images Image[]
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  sectionId Int
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  createAt  DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url String
+  projectId Int
 }

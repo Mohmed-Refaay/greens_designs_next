@@ -186,6 +186,7 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
                 type="text"
                 name="title"
                 className="textInput"
+                disabled={isSubmitting || status?.type === "success"}
                 value={values.title}
                 onChange={handleChange}
               />
@@ -203,6 +204,7 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
                 type="file"
                 accept="image/*"
                 name="image"
+                disabled={isSubmitting || status?.type === "success"}
                 onChange={(e) => {
                   changeImageHandler(e);
                 }}
