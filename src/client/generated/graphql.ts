@@ -29,6 +29,7 @@ export type Mutation = {
   addProject: Project;
   addProjectImage: Scalars['Boolean'];
   addSection: Section;
+  deleteProject: Scalars['Boolean'];
   deleteProjectImage: Scalars['Boolean'];
   deleteSection: Scalars['Boolean'];
   updateProject: Project;
@@ -52,6 +53,11 @@ export type MutationAddProjectImageArgs = {
 export type MutationAddSectionArgs = {
   coverImage: Scalars['String'];
   title: Scalars['String'];
+};
+
+
+export type MutationDeleteProjectArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -82,6 +88,7 @@ export type MutationUpdateSectionArgs = {
 export type Project = {
   __typename?: 'Project';
   content: Scalars['String'];
+  coverImage?: Maybe<Image>;
   createAt: Scalars['DateTime'];
   id: Scalars['ID'];
   images: Array<Image>;
@@ -129,6 +136,13 @@ export type AddSectionMutationVariables = Exact<{
 
 export type AddSectionMutation = { __typename?: 'Mutation', addSection: { __typename?: 'Section', id: string, createAt: any, title: string, coverImage: string } };
 
+export type DeleteProjectMutationVariables = Exact<{
+  deleteProjectId: Scalars['Int'];
+}>;
+
+
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: boolean };
+
 export type DeleteSectionMutationVariables = Exact<{
   deleteSectionId: Scalars['Int'];
 }>;
@@ -148,7 +162,7 @@ export type UpdateSectionMutation = { __typename?: 'Mutation', updateSection: { 
 export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsQuery = { __typename?: 'Query', getProjects: Array<{ __typename?: 'Project', id: string, createAt: any, title: string, content: string, images: Array<{ __typename?: 'Image', id: string, url: string }> }> };
+export type GetProjectsQuery = { __typename?: 'Query', getProjects: Array<{ __typename?: 'Project', id: string, createAt: any, title: string, content: string, coverImage?: { __typename?: 'Image', id: string, url: string } | null, images: Array<{ __typename?: 'Image', id: string, url: string }> }> };
 
 export type GetSectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -239,6 +253,37 @@ export function useAddSectionMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AddSectionMutationHookResult = ReturnType<typeof useAddSectionMutation>;
 export type AddSectionMutationResult = Apollo.MutationResult<AddSectionMutation>;
 export type AddSectionMutationOptions = Apollo.BaseMutationOptions<AddSectionMutation, AddSectionMutationVariables>;
+export const DeleteProjectDocument = gql`
+    mutation DeleteProject($deleteProjectId: Int!) {
+  deleteProject(id: $deleteProjectId)
+}
+    `;
+export type DeleteProjectMutationFn = Apollo.MutationFunction<DeleteProjectMutation, DeleteProjectMutationVariables>;
+
+/**
+ * __useDeleteProjectMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProjectMutation, { data, loading, error }] = useDeleteProjectMutation({
+ *   variables: {
+ *      deleteProjectId: // value for 'deleteProjectId'
+ *   },
+ * });
+ */
+export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectMutation, DeleteProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, options);
+      }
+export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
+export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
+export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
 export const DeleteSectionDocument = gql`
     mutation deleteSection($deleteSectionId: Int!) {
   deleteSection(id: $deleteSectionId)
@@ -312,6 +357,10 @@ export const GetProjectsDocument = gql`
     createAt
     title
     content
+    coverImage {
+      id
+      url
+    }
     images {
       id
       url

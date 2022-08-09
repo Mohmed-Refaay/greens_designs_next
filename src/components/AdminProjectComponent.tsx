@@ -1,41 +1,36 @@
 import React from "react";
+import { Project } from "../client/generated/graphql";
 import Image from "next/image";
 import {
-  GetSectionsDocument,
-  useDeleteSectionMutation,
+  useDeleteProjectMutation,
+  GetProjectsDocument,
 } from "../client/generated/graphql";
 
-export type SectionData = {
-  id: string;
-  title: string;
-  coverImage: string;
-};
-
-interface AdminSectionComponentProps {
-  sectionData: SectionData;
+interface AdminProjectComponentProps {
   updateHandler: () => void;
+  projectData: Project;
 }
 
-const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
-  sectionData,
+const AdminProjectComponent: React.FC<AdminProjectComponentProps> = ({
   updateHandler,
+  projectData,
 }) => {
-  const [deleteSection] = useDeleteSectionMutation({
-    refetchQueries: [{ query: GetSectionsDocument }, "GetSections"],
+  const [deleteProject] = useDeleteProjectMutation({
+    refetchQueries: [{ query: GetProjectsDocument }, "GetProjects"],
   });
 
   const deleteSectionHandler = async () => {
     const isSure = window.confirm(
-      `You want to delete ${sectionData.title} section?`,
+      `You want to delete ${projectData.title} project?`,
     );
 
     if (!isSure) return;
 
-    const data = await deleteSection({
-      variables: { deleteSectionId: +sectionData.id },
+    const data = await deleteProject({
+      variables: { deleteProjectId: +projectData.id },
     });
 
-    if (!data.data?.deleteSection.valueOf()) {
+    if (!data.data?.deleteProject.valueOf()) {
       window.alert("Something went wrong!");
     }
   };
@@ -44,15 +39,19 @@ const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
     <div className="shadow-lg rounded-md overflow-hidden pb-4">
       <div className="relative w-full h-[200px]">
         <Image
-          src={sectionData.coverImage}
+          src={
+            projectData.coverImage
+              ? projectData.coverImage.url
+              : "/images/noImage.jpeg"
+          }
           layout="fill"
           objectFit="cover"
-          alt={sectionData.title}
+          alt={projectData.title}
           priority
         />
       </div>
       <div className="mt-4 flex items-center justify-between px-6">
-        <h3 className="text-center">{sectionData.title}</h3>
+        <h3 className="text-center">{projectData.title}</h3>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -86,4 +85,4 @@ const AdminSectionComponent: React.FC<AdminSectionComponentProps> = ({
   );
 };
 
-export default AdminSectionComponent;
+export default AdminProjectComponent;

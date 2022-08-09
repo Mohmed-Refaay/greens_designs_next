@@ -4,11 +4,13 @@ import image from "next/image";
 import React, { useState } from "react";
 import {
   GetProjectsDocument,
+  Project,
   useAddProjectMutation,
   useGetProjectsQuery,
   useGetSectionsQuery,
 } from "../../client/generated/graphql";
 import AdminLayout from "../../components/AdminLayout";
+import AdminProjectComponent from "../../components/AdminProjectComponent";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import PopupLayout from "../../components/PopupLayout";
 import { uploadFile } from "../../utils/uploadAPI";
@@ -36,7 +38,11 @@ const Projects: React.FC = () => {
         ) : (
           <div className="grid gap-6 mt-7 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {data?.getProjects.map((project) => (
-              <p key={project.id}>{project.title}</p>
+              <AdminProjectComponent
+                key={project.id}
+                projectData={project as Project}
+                updateHandler={() => {}}
+              />
             ))}
           </div>
         )}
@@ -71,7 +77,10 @@ const ProjectPopup: React.FC<ProjectPopupProps> = ({
             errors.title = "This Field is required!";
           }
           if (!values.content) {
-            errors.image = "This Field is required!";
+            errors.content = "This Field is required!";
+          }
+          if (!values.sectionId) {
+            errors.sectionId = "This Field is required!";
           }
           return errors;
         }}
@@ -112,7 +121,7 @@ const ProjectPopup: React.FC<ProjectPopupProps> = ({
           status,
         }) => (
           <form ref={parent as any} onSubmit={handleSubmit}>
-            <div ref={parent as any} className="inputContainer">
+            <div className="inputContainer">
               <label className="text-gray-500">Title:</label>
               <input
                 type="text"

@@ -4,6 +4,10 @@ query GetProjects {
     createAt
     title
     content
+    coverImage {
+      id
+      url
+    }
     images {
       id
       url
