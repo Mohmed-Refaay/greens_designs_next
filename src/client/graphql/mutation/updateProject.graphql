@@ -1,0 +1,15 @@
+mutation UpdateProject(
+  $sectionId: Float!
+  $title: String!
+  $content: String!
+  $updateProjectId: Float!
+) {
+  updateProject(
+    sectionId: $sectionId
+    title: $title
+    content: $content
+    id: $updateProjectId
+  ) {
+    id
+  }
+}

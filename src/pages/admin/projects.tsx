@@ -8,6 +8,7 @@ import {
   useAddProjectMutation,
   useGetProjectsQuery,
   useGetSectionsQuery,
+  useUpdateProjectMutation,
 } from "../../client/generated/graphql";
 import AdminLayout from "../../components/AdminLayout";
 import AdminProjectComponent from "../../components/AdminProjectComponent";
@@ -18,6 +19,20 @@ import { uploadFile } from "../../utils/uploadAPI";
 const Projects: React.FC = () => {
   const { data, loading } = useGetProjectsQuery();
   const [isOpened, setIsOpened] = useState(false);
+  const [selectedProject, setSelectedProject] =
+    useState<Project | null>(null);
+
+  const handleOpenPopup = (data?: Project) => {
+    if (data) {
+      setSelectedProject(data);
+    }
+    setIsOpened(true);
+  };
+
+  const handleClosePopup = () => {
+    if (selectedProject) setSelectedProject(null);
+    setIsOpened(false);
+  };
 
   return (
     <>
@@ -26,10 +41,13 @@ const Projects: React.FC = () => {
       </Head>
       <AdminLayout>
         {isOpened && (
-          <ProjectPopup closeHanlder={() => setIsOpened(false)} />
+          <ProjectPopup
+            data={selectedProject}
+            closeHanlder={handleClosePopup}
+          />
         )}
         <div className="flex justify-end">
-          <button className="btn" onClick={() => setIsOpened(true)}>
+          <button className="btn" onClick={() => handleOpenPopup()}>
             Add Project
           </button>
         </div>
@@ -41,7 +59,9 @@ const Projects: React.FC = () => {
               <AdminProjectComponent
                 key={project.id}
                 projectData={project as Project}
-                updateHandler={() => {}}
+                updateHandler={() =>
+                  handleOpenPopup(project as Project)
+                }
               />
             ))}
           </div>
@@ -55,12 +75,18 @@ export default Projects;
 
 interface ProjectPopupProps {
   closeHanlder: () => void;
+  data?: Project | null;
 }
 
 const ProjectPopup: React.FC<ProjectPopupProps> = ({
   closeHanlder,
+  data: projectData,
 }) => {
   const [addProjectMutation] = useAddProjectMutation({
+    refetchQueries: [{ query: GetProjectsDocument }, "GetProjects"],
+  });
+
+  const [updateProjectMutation] = useUpdateProjectMutation({
     refetchQueries: [{ query: GetProjectsDocument }, "GetProjects"],
   });
 
@@ -69,7 +95,11 @@ const ProjectPopup: React.FC<ProjectPopupProps> = ({
   return (
     <PopupLayout closeHanlder={closeHanlder}>
       <Formik
-        initialValues={{ title: "", content: "", sectionId: "" }}
+        initialValues={{
+          title: projectData?.title || "",
+          content: projectData?.content || "",
+          sectionId: projectData?.section.id || "",
+        }}
         validateOnChange={true}
         validate={(values) => {
           const errors: { [key: string]: string } = {};
@@ -85,12 +115,28 @@ const ProjectPopup: React.FC<ProjectPopupProps> = ({
           return errors;
         }}
         onSubmit={async (values, { setStatus }) => {
-          const { errors } = await addProjectMutation({
-            variables: {
-              ...values,
-              sectionId: +values.sectionId,
-            },
-          });
+          let errors;
+          if (projectData) {
+            const { errors: updateProjectErrors } =
+              await updateProjectMutation({
+                variables: {
+                  ...values,
+                  updateProjectId: +projectData.id,
+                  sectionId: +values.sectionId,
+                },
+              });
+            errors = updateProjectErrors;
+          } else {
+            const { errors: addProjectErrors } =
+              await addProjectMutation({
+                variables: {
+                  ...values,
+                  sectionId: +values.sectionId,
+                },
+              });
+
+            errors = addProjectErrors;
+          }
 
           if (errors) {
             setStatus({
@@ -177,9 +223,9 @@ const ProjectPopup: React.FC<ProjectPopupProps> = ({
                   </option>
                 ))}
               </select>
-              {errors.content && touched.content && (
+              {errors.sectionId && touched.sectionId && (
                 <p className="text-red-500 text-center mt-1">
-                  {errors.content}
+                  {errors.sectionId}
                 </p>
               )}
             </div>

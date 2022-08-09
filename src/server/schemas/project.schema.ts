@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from "type-graphql";
+import { Section } from "./section.schema";
 
 @ObjectType()
 export class Project {
@@ -16,6 +17,9 @@ export class Project {
 
   @Field(() => [Image])
   images!: Image[];
+
+  @Field(() => Section)
+  section!: Section;
 }
 
 @ObjectType()

@@ -27,6 +27,7 @@ export class ProjectReslover {
     return await prisma.project.findMany({
       include: {
         images: true,
+        section: true,
       },
     });
   }
@@ -45,6 +46,7 @@ export class ProjectReslover {
       },
       include: {
         images: true,
+        section: true,
       },
     });
     return data;
@@ -68,6 +70,7 @@ export class ProjectReslover {
       },
       include: {
         images: true,
+        section: true,
       },
     });
     return data;

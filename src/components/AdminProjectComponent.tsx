@@ -51,7 +51,9 @@ const AdminProjectComponent: React.FC<AdminProjectComponentProps> = ({
         />
       </div>
       <div className="mt-4 flex items-center justify-between px-6">
-        <h3 className="text-center">{projectData.title}</h3>
+        <h3 className="text-center">
+          {projectData.section.title}: {projectData.title}
+        </h3>
         <div className="flex items-center gap-2">
           <button
             type="button"

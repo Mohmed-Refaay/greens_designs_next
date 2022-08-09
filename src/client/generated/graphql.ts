@@ -92,6 +92,7 @@ export type Project = {
   createAt: Scalars['DateTime'];
   id: Scalars['ID'];
   images: Array<Image>;
+  section: Section;
   title: Scalars['String'];
 };
 
@@ -150,6 +151,16 @@ export type DeleteSectionMutationVariables = Exact<{
 
 export type DeleteSectionMutation = { __typename?: 'Mutation', deleteSection: boolean };
 
+export type UpdateProjectMutationVariables = Exact<{
+  sectionId: Scalars['Float'];
+  title: Scalars['String'];
+  content: Scalars['String'];
+  updateProjectId: Scalars['Float'];
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', id: string } };
+
 export type UpdateSectionMutationVariables = Exact<{
   coverImage: Scalars['String'];
   updateSectionId: Scalars['String'];
@@ -162,7 +173,7 @@ export type UpdateSectionMutation = { __typename?: 'Mutation', updateSection: { 
 export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsQuery = { __typename?: 'Query', getProjects: Array<{ __typename?: 'Project', id: string, createAt: any, title: string, content: string, coverImage?: { __typename?: 'Image', id: string, url: string } | null, images: Array<{ __typename?: 'Image', id: string, url: string }> }> };
+export type GetProjectsQuery = { __typename?: 'Query', getProjects: Array<{ __typename?: 'Project', id: string, createAt: any, title: string, content: string, section: { __typename?: 'Section', id: string, title: string }, coverImage?: { __typename?: 'Image', id: string, url: string } | null, images: Array<{ __typename?: 'Image', id: string, url: string }> }> };
 
 export type GetSectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -315,6 +326,42 @@ export function useDeleteSectionMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteSectionMutationHookResult = ReturnType<typeof useDeleteSectionMutation>;
 export type DeleteSectionMutationResult = Apollo.MutationResult<DeleteSectionMutation>;
 export type DeleteSectionMutationOptions = Apollo.BaseMutationOptions<DeleteSectionMutation, DeleteSectionMutationVariables>;
+export const UpdateProjectDocument = gql`
+    mutation UpdateProject($sectionId: Float!, $title: String!, $content: String!, $updateProjectId: Float!) {
+  updateProject(sectionId: $sectionId, title: $title, content: $content, id: $updateProjectId) {
+    id
+  }
+}
+    `;
+export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
+
+/**
+ * __useUpdateProjectMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectMutation, { data, loading, error }] = useUpdateProjectMutation({
+ *   variables: {
+ *      sectionId: // value for 'sectionId'
+ *      title: // value for 'title'
+ *      content: // value for 'content'
+ *      updateProjectId: // value for 'updateProjectId'
+ *   },
+ * });
+ */
+export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectMutation, UpdateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, options);
+      }
+export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
+export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
+export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
 export const UpdateSectionDocument = gql`
     mutation UpdateSection($coverImage: String!, $updateSectionId: String!, $title: String!) {
   updateSection(coverImage: $coverImage, id: $updateSectionId, title: $title) {
@@ -357,6 +404,10 @@ export const GetProjectsDocument = gql`
     createAt
     title
     content
+    section {
+      id
+      title
+    }
     coverImage {
       id
       url
