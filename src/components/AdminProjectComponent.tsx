@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Project } from "../client/generated/graphql";
 import Image from "next/image";
 import {
   useDeleteProjectMutation,
   GetProjectsDocument,
 } from "../client/generated/graphql";
+import ProjectImagesPopup from "./ProjectImagesPopup";
 
 interface AdminProjectComponentProps {
   updateHandler: () => void;
@@ -18,6 +19,7 @@ const AdminProjectComponent: React.FC<AdminProjectComponentProps> = ({
   const [deleteProject] = useDeleteProjectMutation({
     refetchQueries: [{ query: GetProjectsDocument }, "GetProjects"],
   });
+  const [isOpened, setIsOpened] = useState(false);
 
   const deleteSectionHandler = async () => {
     const isSure = window.confirm(
@@ -37,6 +39,14 @@ const AdminProjectComponent: React.FC<AdminProjectComponentProps> = ({
 
   return (
     <div className="shadow-lg rounded-md overflow-hidden pb-4">
+      {isOpened && (
+        <ProjectImagesPopup
+          closeHandler={() => setIsOpened(false)}
+          projectId={+projectData.id}
+          projectTitle={projectData.title}
+          projectImages={projectData.images}
+        />
+      )}
       <div className="relative w-full h-[200px]">
         <Image
           src={
@@ -50,11 +60,24 @@ const AdminProjectComponent: React.FC<AdminProjectComponentProps> = ({
           priority
         />
       </div>
-      <div className="mt-4 flex items-center justify-between px-6">
+      <div className="mt-4 flex items-center justify-between px-6 flex-wrap gap-3">
         <h3 className="text-center">
           {projectData.section.title}: {projectData.title}
         </h3>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setIsOpened(true)}
+          >
+            <Image
+              src="/icons/image-gallery.png"
+              layout="fixed"
+              width={25}
+              height={25}
+              alt="Edit Project Images"
+            />
+          </button>
           <button
             type="button"
             className="cursor-pointer"

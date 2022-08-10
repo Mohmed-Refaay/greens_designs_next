@@ -1,0 +1,3 @@
+mutation DeleteProjectImage($deleteProjectImageId: Float!) {
+  deleteProjectImage(id: $deleteProjectImageId)
+}

@@ -1,0 +1,3 @@
+mutation AddProjectImage($projectId: Float!, $url: String!) {
+  addProjectImage(projectId: $projectId, url: $url)
+}

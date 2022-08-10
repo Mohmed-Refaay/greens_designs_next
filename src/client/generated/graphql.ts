@@ -129,6 +129,14 @@ export type AddProjectMutationVariables = Exact<{
 
 export type AddProjectMutation = { __typename?: 'Mutation', addProject: { __typename?: 'Project', id: string, createAt: any, title: string, content: string, images: Array<{ __typename?: 'Image', url: string, id: string }> } };
 
+export type AddProjectImageMutationVariables = Exact<{
+  projectId: Scalars['Float'];
+  url: Scalars['String'];
+}>;
+
+
+export type AddProjectImageMutation = { __typename?: 'Mutation', addProjectImage: boolean };
+
 export type AddSectionMutationVariables = Exact<{
   coverImage: Scalars['String'];
   title: Scalars['String'];
@@ -143,6 +151,13 @@ export type DeleteProjectMutationVariables = Exact<{
 
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: boolean };
+
+export type DeleteProjectImageMutationVariables = Exact<{
+  deleteProjectImageId: Scalars['Float'];
+}>;
+
+
+export type DeleteProjectImageMutation = { __typename?: 'Mutation', deleteProjectImage: boolean };
 
 export type DeleteSectionMutationVariables = Exact<{
   deleteSectionId: Scalars['Int'];
@@ -230,6 +245,38 @@ export function useAddProjectMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AddProjectMutationHookResult = ReturnType<typeof useAddProjectMutation>;
 export type AddProjectMutationResult = Apollo.MutationResult<AddProjectMutation>;
 export type AddProjectMutationOptions = Apollo.BaseMutationOptions<AddProjectMutation, AddProjectMutationVariables>;
+export const AddProjectImageDocument = gql`
+    mutation AddProjectImage($projectId: Float!, $url: String!) {
+  addProjectImage(projectId: $projectId, url: $url)
+}
+    `;
+export type AddProjectImageMutationFn = Apollo.MutationFunction<AddProjectImageMutation, AddProjectImageMutationVariables>;
+
+/**
+ * __useAddProjectImageMutation__
+ *
+ * To run a mutation, you first call `useAddProjectImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddProjectImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addProjectImageMutation, { data, loading, error }] = useAddProjectImageMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useAddProjectImageMutation(baseOptions?: Apollo.MutationHookOptions<AddProjectImageMutation, AddProjectImageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddProjectImageMutation, AddProjectImageMutationVariables>(AddProjectImageDocument, options);
+      }
+export type AddProjectImageMutationHookResult = ReturnType<typeof useAddProjectImageMutation>;
+export type AddProjectImageMutationResult = Apollo.MutationResult<AddProjectImageMutation>;
+export type AddProjectImageMutationOptions = Apollo.BaseMutationOptions<AddProjectImageMutation, AddProjectImageMutationVariables>;
 export const AddSectionDocument = gql`
     mutation AddSection($coverImage: String!, $title: String!) {
   addSection(coverImage: $coverImage, title: $title) {
@@ -295,6 +342,37 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const DeleteProjectImageDocument = gql`
+    mutation DeleteProjectImage($deleteProjectImageId: Float!) {
+  deleteProjectImage(id: $deleteProjectImageId)
+}
+    `;
+export type DeleteProjectImageMutationFn = Apollo.MutationFunction<DeleteProjectImageMutation, DeleteProjectImageMutationVariables>;
+
+/**
+ * __useDeleteProjectImageMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteProjectImageMutation, { data, loading, error }] = useDeleteProjectImageMutation({
+ *   variables: {
+ *      deleteProjectImageId: // value for 'deleteProjectImageId'
+ *   },
+ * });
+ */
+export function useDeleteProjectImageMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProjectImageMutation, DeleteProjectImageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteProjectImageMutation, DeleteProjectImageMutationVariables>(DeleteProjectImageDocument, options);
+      }
+export type DeleteProjectImageMutationHookResult = ReturnType<typeof useDeleteProjectImageMutation>;
+export type DeleteProjectImageMutationResult = Apollo.MutationResult<DeleteProjectImageMutation>;
+export type DeleteProjectImageMutationOptions = Apollo.BaseMutationOptions<DeleteProjectImageMutation, DeleteProjectImageMutationVariables>;
 export const DeleteSectionDocument = gql`
     mutation deleteSection($deleteSectionId: Int!) {
   deleteSection(id: $deleteSectionId)
