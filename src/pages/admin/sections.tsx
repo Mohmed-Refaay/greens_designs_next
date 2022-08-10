@@ -15,7 +15,6 @@ import AdminSectionComponent, {
   SectionData,
 } from "../../components/AdminSectionComponent";
 import Head from "next/head";
-import { gql } from "@apollo/client";
 
 const Sections: React.FC = () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -87,54 +86,10 @@ const SectionPopup: React.FC<SectionPopupProps> = ({
 }) => {
   const [parent] = useAutoAnimate();
   const [addSection] = useAddSectionMutation({
-    update(cache, { data }) {
-      cache.modify({
-        fields: {
-          getSections(existingData = []) {
-            const newSection = cache.writeFragment({
-              data: data?.addSection,
-              fragment: gql`
-                fragment NewSection on Section {
-                  id
-                  title
-                  createAt
-                  coverImage
-                }
-              `,
-            });
-            return [...existingData, newSection];
-          },
-        },
-      });
-    },
+    refetchQueries: [{ query: GetSectionsDocument }, "GetSections"],
   });
   const [updateSection] = useUpdateSectionMutation({
-    update(cache, { data }) {
-      cache.modify({
-        fields: {
-          getSections(existingData = [], { readField }) {
-            const updatedSection = cache.writeFragment({
-              data: data?.updateSection,
-              fragment: gql`
-                fragment NewSection on Section {
-                  id
-                  title
-                  createAt
-                  coverImage
-                }
-              `,
-            });
-
-            const filteredData = existingData.filter(
-              (ref: any) =>
-                readField("id", ref) !== data?.updateSection.id,
-            );
-
-            return [...filteredData, updatedSection];
-          },
-        },
-      });
-    },
+    refetchQueries: [{ query: GetSectionsDocument }, "GetSections"],
   });
 
   const [image, setImage] = useState<File | null>(null);
