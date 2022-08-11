@@ -31,14 +31,15 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         {/* Sidebar */}
         <div className="shadow-lg flex-none py-5">
           {links.map((link) => (
-            <div
-              key={link.href}
-              className={`sidebarLink ${
-                router.pathname === link.href ? "bg-slate-200" : ""
-              } mb-3`}
-            >
-              <Link href={link.href}>{link.text}</Link>
-            </div>
+            <Link key={link.href} href={link.href}>
+              <div
+                className={`sidebarLink cursor-pointer ${
+                  router.pathname === link.href ? "bg-slate-200" : ""
+                } mb-3`}
+              >
+                {link.text}
+              </div>
+            </Link>
           ))}
         </div>
         {/* Content */}
