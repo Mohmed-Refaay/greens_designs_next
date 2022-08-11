@@ -3,6 +3,7 @@ import React, { ChangeEvent, useState } from "react";
 import {
   GetProjectsDocument,
   Image,
+  useDeleteProjectImageMutation,
 } from "../client/generated/graphql";
 import PopupLayout from "./PopupLayout";
 import { useAddProjectImageMutation } from "../client/generated/graphql";
@@ -28,6 +29,11 @@ const ProjectImagesPopup: React.FC<ProjectImagesPopupProps> = ({
     refetchQueries: [{ query: GetProjectsDocument }, "GetProjects"],
   });
 
+  const [deleteImage, { loading: deleteImageLoading }] =
+    useDeleteProjectImageMutation({
+      refetchQueries: [{ query: GetProjectsDocument }, "GetProjects"],
+    });
+
   const onChangeHandler = async (
     e: ChangeEvent<HTMLInputElement>,
   ) => {
@@ -50,14 +56,33 @@ const ProjectImagesPopup: React.FC<ProjectImagesPopupProps> = ({
       <h3 className="mb-3">Images of {projectTitle}:</h3>
       <div className="grid grid-cols-2 gap-3">
         {projectImages.map((image) => (
-          <div className="relative w-full h-[150px] rounded-lg overflow-hidden">
-            <NextImage
-              key={image.id}
-              src={image.url}
-              objectFit="cover"
-              alt={projectTitle + image.id}
-              layout="fill"
-            />
+          <div
+            key={image.id}
+            className="relative w-full h-[150px] rounded-lg overflow-hidden group transition"
+          >
+            {deleteImageLoading ? (
+              <LoadingSpinner minHeight={150} size="sm" />
+            ) : (
+              <>
+                <div
+                  className="z-30 absolute transition opacity-0 bg-red-400/70 w-full h-full flex items-center justify-center font-semibold text-white group-hover:opacity-100 duration-500 cursor-pointer"
+                  onClick={() =>
+                    deleteImage({
+                      variables: { deleteProjectImageId: +image.id },
+                    })
+                  }
+                >
+                  Delete
+                </div>
+
+                <NextImage
+                  src={image.url}
+                  objectFit="cover"
+                  alt={projectTitle + image.id}
+                  layout="fill"
+                />
+              </>
+            )}
           </div>
         ))}
         <label
