@@ -20,12 +20,20 @@ const apolloServer = new ApolloServer({
 
 const startServer = apolloServer.start();
 
+const allowed_origins = [
+  "http://localhost:3000",
+  "greens-design.vercel.app",
+];
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  allowed_origins.forEach((origin) => {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  });
+
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Headers",
