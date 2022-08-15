@@ -14,7 +14,7 @@ interface HomeProps {
 }
 
 const Home: NextPage<HomeProps> = ({ data }) => {
-  // const { data: sectionsData, error } = data;
+  const { data: sectionsData, error } = data;
 
   return (
     <>
@@ -31,7 +31,7 @@ const Home: NextPage<HomeProps> = ({ data }) => {
           beliefs through our client&apos;s vision
         </h3>
 
-        {/* {error ? (
+        {error ? (
           <div className="text-2xl w-full flex items-center justify-center min-h-[300px] text-red-500">
             Something went wrong!
           </div>
@@ -58,7 +58,7 @@ const Home: NextPage<HomeProps> = ({ data }) => {
               </div>
             ))}
           </>
-        )} */}
+        )}
       </Layout>
     </>
   );
@@ -67,13 +67,13 @@ const Home: NextPage<HomeProps> = ({ data }) => {
 export default Home;
 
 export const getStaticProps: GetStaticProps = async () => {
-  // const data = await apolloClient.query<GetSectionsQuery>({
-  //   query: GetSectionsDocument,
-  // });
+  const data = await apolloClient.query<GetSectionsQuery>({
+    query: GetSectionsDocument,
+  });
 
   return {
     props: {
-      data: {},
+      data: data,
     },
     revalidate: 20,
   };
