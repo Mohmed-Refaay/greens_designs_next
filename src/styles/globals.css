@@ -1,11 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+
+html {
+  font-family: "Montserrat", sans-serif !important;
+}
 
 @layer components {
   .sidebarLink {
     @apply px-6 py-2 hover:bg-slate-200 transition-all;
   }
+
   .inputContainer {
     @apply flex flex-col mb-4 gap-1;
   }
